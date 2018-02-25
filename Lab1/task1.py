@@ -1,13 +1,8 @@
-import random
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-
-def integer_generator_from_range(start, stop):
-    while True:
-        yield random.randint(start, stop - 1)
-
+from Lab1.utils import integer_generator_from_range
 
 frames = 200
 scope = (0, 10)
@@ -26,17 +21,15 @@ bars = ax.bar(variables, occurrences, align='center', alpha=0.5)
 
 
 def init():
-    for i, b in enumerate(bars):
-        b.set_height(0)
-    return bars
+    for bar in bars:
+        bar.set_height(0)
 
 
 def animate(i):
     occurrences[next(integer_generator_from_range(*scope))] += 1
     probabilities = occurrences / np.sum(occurrences)
-    for i, b in enumerate(bars):
-        b.set_height(probabilities[i])
-    return bars
+    for i, bar in enumerate(bars):
+        bar.set_height(probabilities[i])
 
 
 anim = animation.FuncAnimation(fig, animate, init_func=init, repeat=False, blit=False, frames=frames, interval=10)
