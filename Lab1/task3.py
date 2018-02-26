@@ -24,7 +24,7 @@ def calculate_medical_test(p_of_disease, p_of_positive_test_given_no_disease, p_
 
 
 population = 50000
-affected_people_out_of_population = 100
+affected_people_out_of_population = 10000
 
 probability_of_disease = affected_people_out_of_population / population
 positive_test_given_no_disease = 0.02
@@ -40,14 +40,14 @@ series2 = []
 series3 = []
 series4 = []
 
-for i in range(1, 101):
+for i in range(1, affected_people_out_of_population + 1):
     result = calculate_medical_test(i / population, positive_test_given_no_disease, negative_test_given_disease)
     series1.append(result[0])
     series2.append(result[1])
     series3.append(result[2])
     series4.append(result[3])
 
-affected = np.arange(1, 101)
+affected = np.arange(1, affected_people_out_of_population + 1)
 
 plt.plot(affected, series1, color='blue', label='Probability of disease when test positive.')
 plt.plot(affected, series2, color='green', label='Probability of disease when test negative.')

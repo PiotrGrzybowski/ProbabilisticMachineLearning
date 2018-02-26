@@ -10,21 +10,22 @@ occurrences = np.zeros((stop, stop))
 
 fig, ax = plt.subplots()
 data = np.random.rand(stop, stop)
-im = ax.imshow(data)
+im = ax.imshow(data, cmap=plt.get_cmap('hsv'))
 
 ax.set_xlim(start-1, stop)
 ax.set_ylim(start-1, stop)
+numbers = []
 
 
 def init():
     im.set_data(np.zeros((stop, stop)))
+    numbers.append(next(integer_generator_from_range(start, stop)))
     return im
 
 
 def animate(i):
-    first = next(integer_generator_from_range(start, stop))
-    second = next(integer_generator_from_range(start, stop))
-    occurrences[first][second] += 1
+    numbers.append(next(integer_generator_from_range(start, stop)))
+    occurrences[numbers[-2]][numbers[-1]] += 1
     im.set_data(occurrences / np.sum(occurrences))
     return im
 
