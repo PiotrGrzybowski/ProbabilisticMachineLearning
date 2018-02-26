@@ -10,7 +10,7 @@ occurrences = np.zeros((stop, stop))
 
 fig, ax = plt.subplots()
 data = np.random.rand(stop, stop)
-im = ax.imshow(data, cmap=plt.get_cmap('hsv'))
+im = ax.imshow(data)
 
 ax.set_xlim(start-1, stop)
 ax.set_ylim(start-1, stop)
@@ -18,6 +18,7 @@ ax.set_ylim(start-1, stop)
 
 def init():
     im.set_data(np.zeros((stop, stop)))
+    return im
 
 
 def animate(i):

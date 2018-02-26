@@ -53,5 +53,7 @@ plt.plot(affected, series1, color='blue', label='Probability of disease when tes
 plt.plot(affected, series2, color='green', label='Probability of disease when test negative.')
 plt.plot(affected, series3, color='red', label='Probability no disease when test positive.')
 plt.plot(affected, series4, color='black', label='Probability no disease when test negative.')
+plt.xlabel('People with disease on 50.000 population.')
+plt.ylabel('Probability of having the disease.')
 plt.legend()
 plt.show()
