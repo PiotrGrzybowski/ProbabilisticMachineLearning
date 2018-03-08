@@ -1,15 +1,51 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+import seaborn as sns
 
-mean = [0, 0, 0]
-cov = [[1, 0, 0],
-       [0, 1, 0],
-       [0, 0, 1]]
 
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-x, y, z = np.random.multivariate_normal(mean, cov, 5000).T
-plt.scatter(x, y, z)
-plt.axis('equal')
-plt.show()
+def normal_distribution(mean=0, sigma=1, samples=1):
+    return np.random.normal(mean, sigma, samples)
+
+
+def get_cumulative_data(data, func):
+    return [func(data[:i]) for i in range(1, len(data) - 1)]
+
+
+def get_cumulative_mean_and_variance(data):
+    return get_cumulative_data(data, np.mean), get_cumulative_data(data, np.var)
+
+
+def visualize_gaussian_distributions(means, sigmas, samples):
+    data = np.zeros(shape=(len(means), samples))
+    for i in range(len(means)):
+        data[i, :] = normal_distribution(means[i], sigmas[i], samples)
+
+    data = np.sum(data, axis=0)
+
+    ax_0 = sns.distplot(data)
+    ax_0.set_title('Gaussian Distribution with parameters: mean = {}, sigma = {}'.format(means, sigmas))
+    ax_0.set_xlabel('x')
+    ax_0.set_ylabel('y')
+    plt.show()
+
+    cumulative_means, cumulative_variances = get_cumulative_mean_and_variance(data)
+    f, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, sharey=True)
+
+    ax1.set_title('How the mean of the normal distribution changes depends on number of samples.')
+    ax1.set_xlabel('Number of samples')
+    ax1.set_ylabel('Mean')
+    ax1.axhline(y=np.sum(means), color='red')
+    ax1.plot(cumulative_means)
+
+    ax2.set_title('How the variation of the normal distribution changes depends on number of samples.')
+    ax2.set_xlabel('Number of samples')
+    ax2.set_ylabel('Variance')
+    ax2.plot(cumulative_variances)
+    ax2.axhline(y=np.sum(sigmas), color='red')
+    plt.show()
+
+
+visualize_gaussian_distributions(means=[0], sigmas=[1], samples=5000)
+# visualize_gaussian_distributions(means=[5, 10], sigmas=[1, 1], samples=5000)
+# visualize_gaussian_distributions(means=[5, 10], sigmas=[1, 1], samples=5000)
+
