@@ -31,21 +31,21 @@ def visualize_gaussian_distributions(means, sigmas, samples):
     cumulative_means, cumulative_variances = get_cumulative_mean_and_variance(data)
     f, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, sharey=True)
 
-    ax1.set_title('How the mean of the normal distribution changes depends on number of samples.')
+    ax1.set_title('Mean depends on samples.')
     ax1.set_xlabel('Number of samples')
     ax1.set_ylabel('Mean')
     ax1.axhline(y=np.sum(means), color='red')
     ax1.plot(cumulative_means)
 
-    ax2.set_title('How the variation of the normal distribution changes depends on number of samples.')
+    ax2.set_title('Variance depends on samples.')
     ax2.set_xlabel('Number of samples')
     ax2.set_ylabel('Variance')
     ax2.plot(cumulative_variances)
-    ax2.axhline(y=np.sum(sigmas), color='red')
+    ax2.axhline(y=np.sum([x ** 2 for x in sigmas]), color='red')
     plt.show()
 
 
-visualize_gaussian_distributions(means=[0], sigmas=[1], samples=5000)
+visualize_gaussian_distributions(means=[0,2,0, 4], sigmas=[2, 0.5, 1,12], samples=5000)
 # visualize_gaussian_distributions(means=[5, 10], sigmas=[1, 1], samples=5000)
 # visualize_gaussian_distributions(means=[5, 10], sigmas=[1, 1], samples=5000)
 
