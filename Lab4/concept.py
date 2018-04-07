@@ -38,7 +38,8 @@ class ArithmeticSequencesConcept(Concept):
 
 
 def generate_concepts(start, stop):
-    return [OddNumbersConcept(start, stop, 'Odd Numbers'), EvenNumbersConcept(1, 100, 'Even Numbers')]
+    return [OddNumbersConcept(start, stop, 'Odd Numbers'), EvenNumbersConcept(start, stop, 'Even Numbers')] + \
+           [ArithmeticSequencesConcept(i, stop, "Sequence {}".format(i)) for i in range(start, stop)]
 
 
 if __name__ == "__main__":
