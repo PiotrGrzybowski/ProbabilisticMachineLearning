@@ -1,12 +1,28 @@
-from Lab4.concept import generate_concepts
-from Lab4.bayesian import likelihood
+from functools import partial
 
+from Lab4.bayesian import maximum_a_posteriori_estimator, likelihoods, posteriors, maximum_likelihood_estimator
+from Lab4.concept import is_odd, is_even, is_divisible_by_n, does_data_satisfy_concept
+from Lab4.settings import STOP
+from Lab4.utils import results_log, priors_log
 
 if __name__ == "__main__":
-    concepts = generate_concepts(1, 100)
-    data = [3, 6, 9]
+    concepts = [is_odd, is_even] + [partial(is_divisible_by_n, n=i) for i in range(3, STOP + 1)]
+    data = [6, 48]
+    print("Data = {}".format(data))
 
-    results = [(concept.name, likelihood(data, concept)) for concept in concepts if concept.satisfy_concept(data)]
+    fine_concepts = [concept for concept in concepts if does_data_satisfy_concept(data, concept)]
+    print(fine_concepts)
+    results = likelihoods(data, fine_concepts)
+    print("Likelihood: {}".format(results_log(results)))
 
-    for result in sorted(results, key=lambda x: x[1], reverse=True):
-        print(result)
+    prior = {concept: 1 / len(concepts) for concept in fine_concepts}
+    print("Prior: {}".format(priors_log(prior)))
+
+    results = posteriors(data, fine_concepts, prior)
+    print("Posterior: {}".format(results_log(results)))
+
+    results = maximum_a_posteriori_estimator(data, fine_concepts, prior)
+    print("Maximum a posteriori estimator: {} -> {}".format(results[0], results[1]))
+
+    results = maximum_likelihood_estimator(data, fine_concepts)
+    print("Maximum likelihood estimator: {} -> {}".format(results[0], results[1]))

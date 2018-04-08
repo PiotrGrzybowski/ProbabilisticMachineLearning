@@ -1,47 +1,34 @@
-from abc import abstractmethod
+from functools import partial
+
+from Lab4.settings import START, STOP
 
 
-class Concept:
-    def __init__(self, start, stop, name):
-        self.extension = self.generate_extension(start, stop)
-        self.name = name
-
-    @abstractmethod
-    def generate_extension(self, start, stop):
-        pass
-
-    def satisfy_concept(self, numbers):
-        return set(numbers).issubset(self.extension)
-
-    @property
-    def size(self):
-        return len(self.extension)
+def is_even(x):
+    return x % 2 == 0
 
 
-class OddNumbersConcept(Concept):
-    def generate_extension(self, start, stop):
-        if start % 2 == 0:
-            start += 1
-        return set(range(start, stop + 1, 2))
+def is_odd(x):
+    return x % 2 == 1
 
 
-class EvenNumbersConcept(Concept):
-    def generate_extension(self, start, stop):
-        if start % 2 == 1:
-            start += 1
-        return set(range(start, stop + 1, 2))
+def is_divisible_by_n(x, n):
+    return x % n == 0
 
 
-class ArithmeticSequencesConcept(Concept):
-    def generate_extension(self, start, stop):
-        return set(range(start, stop + 1, start))
+def does_data_satisfy_concept(data, concept):
+    return all(concept(item) for item in data)
 
 
-def generate_concepts(start, stop):
-    return [OddNumbersConcept(start, stop, 'Odd Numbers'), EvenNumbersConcept(start, stop, 'Even Numbers')] + \
-           [ArithmeticSequencesConcept(i, stop, "Sequence {}".format(i)) for i in range(start, stop)]
+def concept_power(concept):
+    return len([i for i in range(START, STOP + 1) if concept(i)])
+
+
+def concept_label(concept):
+    if isinstance(concept, partial):
+        return "{}, n = {}".format(concept.func.__name__, concept.keywords['n'])
+    else:
+        return concept.__name__
 
 
 if __name__ == "__main__":
     pass
-

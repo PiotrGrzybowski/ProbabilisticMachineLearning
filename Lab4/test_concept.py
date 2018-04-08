@@ -1,136 +1,51 @@
 import unittest
+from functools import partial
 
-from Lab4.concept import OddNumbersConcept, EvenNumbersConcept, ArithmeticSequencesConcept
-
-
-class TestOddNumbersConcept(unittest.TestCase):
-    def setUp(self):
-        self.concept = OddNumbersConcept(1, 100, 'Odd Numbers')
-
-    def test_odd_number_in_scope_satisfies_concept(self):
-        self.assertTrue(self.concept.satisfy_concept([1]))
-        self.assertTrue(self.concept.satisfy_concept([51]))
-        self.assertTrue(self.concept.satisfy_concept([99]))
-
-    def test_list_of_odd_numbers_in_scope_satisfies_concept(self):
-        self.assertTrue(self.concept.satisfy_concept([1, 59, 99]))
-        self.assertTrue(self.concept.satisfy_concept([1, 1, 1, 1, 7, 7, 7, 7, 99, 99, 99]))
-        self.assertTrue(self.concept.satisfy_concept([99, 97, 7]))
-
-    def test_odd_number_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([101]))
-        self.assertFalse(self.concept.satisfy_concept([103]))
-        self.assertFalse(self.concept.satisfy_concept([0]))
-
-    def test_list_of_odd_numbers_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([101, 1, 59, 99]))
-        self.assertFalse(self.concept.satisfy_concept([101, 1, 1, 1, 1, 7, 7, 7, 7, 99, 99, 99]))
-        self.assertFalse(self.concept.satisfy_concept([101, 99, 97, 7]))
-
-    def test_even_number_in_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([2]))
-        self.assertFalse(self.concept.satisfy_concept([100]))
-        self.assertFalse(self.concept.satisfy_concept([50]))
-
-    def test_list_with_even_number_in_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([3, 2, 4, 48]))
-        self.assertFalse(self.concept.satisfy_concept([48, 4, 2, 8, 48]))
-        self.assertFalse(self.concept.satisfy_concept([100, 4, 2, 8, 48]))
-
-    def test_even_number_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([202]))
-        self.assertFalse(self.concept.satisfy_concept([402]))
-        self.assertFalse(self.concept.satisfy_concept([0]))
-
-    def test_list_of_even_numbers_with_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([2, 0, 202]))
-        self.assertFalse(self.concept.satisfy_concept([2, 0, 402]))
-        self.assertFalse(self.concept.satisfy_concept([2, 0, 602]))
+from Lab4.concept import is_even, is_odd, is_divisible_by_n, does_data_satisfy_concept, concept_power
 
 
-class TestEvenNumbersConcept(unittest.TestCase):
-    def setUp(self):
-        self.concept = EvenNumbersConcept(1, 100, 'Even Numbers')
+class TestConcept(unittest.TestCase):
+    def test_is_even_number(self):
+        self.assertTrue(is_even(10))
+        self.assertTrue(is_even(8))
+        self.assertTrue(is_even(0))
 
-    def test_even_number_in_scope_satisfies_concept(self):
-        self.assertTrue(self.concept.satisfy_concept([2]))
-        self.assertTrue(self.concept.satisfy_concept([100]))
-        self.assertTrue(self.concept.satisfy_concept([50]))
+        self.assertFalse(is_even(1))
+        self.assertFalse(is_even(3))
+        self.assertFalse(is_even(99))
 
-    def test_list_with_even_number_in_scope_satisfies_concept(self):
-        self.assertTrue(self.concept.satisfy_concept([6, 2, 4, 48]))
-        self.assertTrue(self.concept.satisfy_concept([48, 4, 2, 8, 48]))
-        self.assertTrue(self.concept.satisfy_concept([100, 4, 2, 8, 48]))
+    def test_is_odd_number(self):
+        self.assertFalse(is_odd(10))
+        self.assertFalse(is_odd(8))
+        self.assertFalse(is_odd(0))
 
-    def test_even_number_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([202]))
-        self.assertFalse(self.concept.satisfy_concept([402]))
-        self.assertFalse(self.concept.satisfy_concept([0]))
+        self.assertTrue(is_odd(1))
+        self.assertTrue(is_odd(3))
+        self.assertTrue(is_odd(99))
 
-    def test_list_of_even_numbers_with_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([2, 0, 202]))
-        self.assertFalse(self.concept.satisfy_concept([2, 0, 402]))
-        self.assertFalse(self.concept.satisfy_concept([2, 0, 602]))
+    def test_is_divisible_by_4(self):
+        self.assertTrue(is_divisible_by_n(4, 4))
+        self.assertTrue(is_divisible_by_n(8, 4))
+        self.assertTrue(is_divisible_by_n(16, 4))
 
-    def test_odd_number_in_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([1]))
-        self.assertFalse(self.concept.satisfy_concept([51]))
-        self.assertFalse(self.concept.satisfy_concept([99]))
+        self.assertFalse(is_divisible_by_n(1, 4))
+        self.assertFalse(is_divisible_by_n(2, 4))
+        self.assertFalse(is_divisible_by_n(5, 4))
 
-    def test_list_of_odd_numbers_in_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([1, 59, 99]))
-        self.assertFalse(self.concept.satisfy_concept([1, 1, 1, 1, 7, 7, 7, 7, 99, 99, 99]))
-        self.assertFalse(self.concept.satisfy_concept([99, 97, 7]))
+    def test_does_data_satisfy_concept(self):
+        self.assertTrue(does_data_satisfy_concept([2, 4, 6, 8], is_even))
+        self.assertFalse(does_data_satisfy_concept([2, 4, 6, 8, 9], is_even))
 
-    def test_odd_number_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([101]))
-        self.assertFalse(self.concept.satisfy_concept([103]))
-        self.assertFalse(self.concept.satisfy_concept([0]))
+        self.assertTrue(does_data_satisfy_concept([1, 3, 9], is_odd))
+        self.assertFalse(does_data_satisfy_concept([1, 3, 9, 8], is_odd))
 
-    def test_list_of_odd_numbers_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([101, 1, 59, 99]))
-        self.assertFalse(self.concept.satisfy_concept([101, 1, 1, 1, 1, 7, 7, 7, 7, 99, 99, 99]))
-        self.assertFalse(self.concept.satisfy_concept([101, 99, 97, 7]))
+        self.assertTrue(does_data_satisfy_concept([3, 9, 12], partial(is_divisible_by_n, n=3)))
+        self.assertFalse(does_data_satisfy_concept([1, 3, 9, 12], partial(is_divisible_by_n, n=3)))
 
-
-class TestArithmeticSequencesConceptDiff2(unittest.TestCase):
-    def setUp(self):
-        self.concept = ArithmeticSequencesConcept(2, 100, 'Sequence 2')
-
-    def test_arithmetic_sequence_in_scope_satisfies_concept(self):
-        self.assertTrue(self.concept.satisfy_concept([2, 4]))
-        self.assertTrue(self.concept.satisfy_concept([48, 96]))
-        self.assertTrue(self.concept.satisfy_concept([96, 98, 100]))
-        self.assertTrue(self.concept.satisfy_concept([20, 40, 60, 80]))
-
-    def test_arithmetic_sequence_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([96, 98, 100, 102]))
-        self.assertFalse(self.concept.satisfy_concept([0, 1, 2, 3]))
-        self.assertFalse(self.concept.satisfy_concept([0]))
-
-    def test_random_sequence_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([1, 96, 98, 6, 100, 102]))
-        self.assertFalse(self.concept.satisfy_concept([0, 1, 2, 3, 99]))
-
-
-class TestArithmeticSequencesConceptDiff20(unittest.TestCase):
-    def setUp(self):
-        self.concept = ArithmeticSequencesConcept(20, 100, 'Sequence 20')
-
-    def test_arithmetic_sequence_in_scope_satisfies_concept(self):
-        self.assertTrue(self.concept.satisfy_concept([20, 40]))
-        self.assertTrue(self.concept.satisfy_concept([40, 60, 60, 80, 100]))
-        self.assertTrue(self.concept.satisfy_concept([20, 80, 100]))
-        self.assertTrue(self.concept.satisfy_concept([20, 100]))
-
-    def test_arithmetic_sequence_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([96, 98, 100, 102]))
-        self.assertFalse(self.concept.satisfy_concept([0, 1, 2, 3]))
-        self.assertFalse(self.concept.satisfy_concept([0]))
-
-    def test_random_sequence_out_of_scope_satisfies_concept(self):
-        self.assertFalse(self.concept.satisfy_concept([1, 96, 98, 6, 100, 102]))
-        self.assertFalse(self.concept.satisfy_concept([0, 1, 2, 3, 99]))
+    def test_concept_power(self):
+        self.assertEquals(concept_power(is_even), 50)
+        self.assertEquals(concept_power(is_odd), 50)
+        self.assertEquals(concept_power(partial(is_divisible_by_n, n=20)), 5)
 
 
 if __name__ == "__main__":
