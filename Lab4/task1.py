@@ -15,7 +15,9 @@ if __name__ == "__main__":
     results = likelihoods(data, fine_concepts)
     print("Likelihood: {}".format(results_log(results)))
 
-    prior = {concept: 1 / len(concepts) for concept in fine_concepts}
+    p = 0.1
+    prior = {concept: (1 - p) / len(concepts) for concept in fine_concepts}
+    prior[concepts[1]] = p
     print("Prior: {}".format(priors_log(prior)))
 
     results = posteriors(data, fine_concepts, prior)
