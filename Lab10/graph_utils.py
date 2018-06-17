@@ -1,5 +1,6 @@
 from itertools import islice
 import networkx as nx
+import random
 
 TAIL_TO_TAIL = 1
 HEAD_TO_HEAD = -1
@@ -53,8 +54,16 @@ def generate_random_dag(n, p):
 
 
 def are_nodes_d_separated_by_observation(graph, source, target, observation):
-    for path in nx.all_simple_paths(graph.to_undirected(), source, target):
+    paths = list(nx.all_simple_paths(graph.to_undirected(), source, target))
+    print("Paths = {}".format(len(paths)))
+    for path in paths:
+        print(path)
         if not is_path_blocked_by_observation(graph, path, observation):
             return False
 
     return True
+
+
+def get_random_color():
+    r = lambda: random.randint(0, 255)
+    return '#%02X%02X%02X' % (r(), r(), r())
